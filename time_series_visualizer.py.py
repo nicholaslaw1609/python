@@ -38,7 +38,7 @@ df
 x = df["date"]
 y = df["value"]
 def draw_line_plot():
-    plt.plot(x, y)
+    plt.plot(x, y, "r")
     plt.xlabel("Date")
     plt.ylabel("Page Views")
     plt.title("Daily freeCodeCamp Forum Page Views 5/2016-12/2019")
