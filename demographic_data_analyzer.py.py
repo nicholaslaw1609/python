@@ -1,115 +1,50 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
-import pandas as pd 
-df = pd.read_csv("adult(in).csv")
-
-
-# In[2]:
-
-
-df.head()
-
-
-# In[3]:
-
-
-race = pd.Series([len(df.query('race == " White"')), len(df.query('race == " Black"')), len(df.query('race == " Other"')),
-                  len(df.query('race == " Amer-Indian-Eskimo"')),
-                  len(df.query('race == " Asian-Pac-Islander"'))], 
-                 index = [" White", " Black", " Other", " Amer-Indian-Eskimo", " Asian-Pac-Isalander"])
-
-
-# In[4]:
-
-
-race
-
-
-# In[10]:
-
-
-df.query('sex == " Male"')["age"].mean()
-
-
-# In[15]:
-
-
-len(df.query('education == " Bachelors"'))/ len(df)
-
-
-# In[21]:
-
-
-len(df.query('(education == " Bachelors" | education == " Masters" | education == " Doctorate" ) & income == " >50K"'))
-
-
-# In[19]:
-
-
-len(df.query('education == " Bachelors" | education == " Masters" | education == " Doctorate"'))
-
-
-# In[22]:
-
-
-3486/7491
-
-
-# In[25]:
-
-
-len(df.query('not (education == " Bachelors" | education == " Masters" | education == " Doctorate") & income ==" >50K"'))/ len(df.query('not (education == " Bachelors" | education == " Masters" | education == " Doctorate") '))
-
-
-# In[30]:
-
-
-df["hours-per-week"].sort_values 
-#13
-
-
-# In[48]:
-
-
-len(df[ (df["hours-per-week"] == 13) & (df["income"] == " >50K" )])/ len(df[ df["hours-per-week"] == 13 ])
-
-
-# In[51]:
-
-
-len(df.query( 'income == " >50K"'))
-
-
-# In[66]:
-
-
-list = [" United-States"," Cambodia"," England"," Puerto-Rico"," Canada"," Germany"," Outlying-US(Guam-USVI-etc)"," India"," Japan"," Greece"," South"," China"," Cuba"," Iran"," Honduras"," Philippines"," Italy"," Poland"," Jamaica"," Vietnam"," Mexico"," Portugal"," Ireland"," France"," Dominican-Republic"," Laos"," Ecuador"," Taiwan"," Haiti"," Columbia"," Hungary"," Guatemala"," Nicaragua"," Scotland"," Thailand"," Yugoslavia"," El-Salvador"," Trinadad&Tobago"," Peru"," Hong"," Holand-Netherlands"]
-for item in list:
-    print(len(df[(df["income"] == " >50K") & (df["native-country"] ==  item)]) )  
-print(7171/7841)
-
-
-# In[79]:
-
-
-list = [" Prof-specialty"," Exec-managerial"," Sales"," Tech-support"," Transport-moving"," Other-service"]
-for item in list:
-      print(len(df[ (df["income"] == " >50K") & (df["native-country"] == " India") & (df["occupation"] == item)]))
-#Prof-specialty #25
-
-
-# In[76]:
-
-
-
-
-
-# In[ ]:
-
-
-
+import pandas as pd
+import numpy as np
+df = pd.read_csv("adult.data.csv")
+def calculate_demographic_data(print_data=True):
+    df = pd.read_csv("adult.data.csv")
+    race_count = df["race"].value_counts
+    average_age_men = round(np.mean(df[df["sex"] == "Male"]["age"]), 1)
+    percentage_bachelors = round(len(df[df['education'] == 'Bachelors']) / len(df) * 100, 1)
+    HE = df["education"].isin(["Bachelors", "Masters", "Doctorate"])
+    rich = df["salary"] == ">50K"
+    higher_education_rich = round((HE & rich).sum() / HE.sum() * 100, 1)
+    lower_education_rich = round((~HE & rich).sum() / (~HE).sum() * 100, 1)
+    min_work_hours = df["hours-per-week"].min()
+    min_work = df["hours-per-week"] == min_work_hours
+    rich_percentage = round((min_work & rich).sum() / min_work.sum() *100, 1)
+    HEp = (df[rich]["native-country"].value_counts() / df["native-country"].value_counts() * 100).sort_values(ascending = False)
+    highest_earning_country = HEp.index[0]
+    highest_earning_country_percentage = round(HEp.iloc[0], 1)
+    top_IN_occupation = df[(df["native-country"]== "India") & rich] \
+    ["occupation"].value_counts().sort_values(ascending = False).index[0]
+
+
+    
+
+    if print_data:
+        print("Number of each race:\n", race_count) 
+        print("Average age of men:", average_age_men)
+        print(f"Percentage with Bachelors degrees: {percentage_bachelors}%")
+        print(f"Percentage with higher education that earn >50K: {higher_education_rich}%")
+        print(f"Percentage without higher education that earn >50K: {lower_education_rich}%")
+        print(f"Min work time: {min_work_hours} hours/week")
+        print(f"Percentage of rich among those who work fewest hours: {rich_percentage}%")
+        print("Country with highest percentage of rich:", highest_earning_country)
+        print(f"Highest percentage of rich people in country: {highest_earning_country_percentage}%")
+        print("Top occupations in India:", top_IN_occupation)
+
+    return {
+        'race_count': race_count,
+        'average_age_men': average_age_men,
+        'percentage_bachelors': percentage_bachelors,
+        'higher_education_rich': higher_education_rich,
+        'lower_education_rich': lower_education_rich,
+        'min_work_hours': min_work_hours,
+        'rich_percentage': rich_percentage,
+        'highest_earning_country': highest_earning_country,
+        'highest_earning_country_percentage':
+        highest_earning_country_percentage,
+        'top_IN_occupation': top_IN_occupation
+    }
 
