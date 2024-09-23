@@ -29,7 +29,7 @@ df = df[(df["value"] <= df["value"].quantile(0.975)) &
 # In[3]:
 
 
-df
+
 
 
 # In[4]:
@@ -47,29 +47,30 @@ def draw_line_plot():
     plt.show
     fig.savefig('line_plot.png')
     return fig
-draw_line_plot()
+
 
 
 # In[17]:
 
 
 def draw_bar_plot():
-    k = sns.barplot(x = "year" , y = "value", hue = "month" , hue_order=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], data = df)
+    fig, ax = plt.subplots(figsize = (20,10))
+    ax = sns.barplot(x = "year" , y = "value", hue = "month" , hue_order=['January','February','March','April','May','June','July','August','September','October','November','December'],data = df)
     plt.legend(title = "Months")
     plt.xlabel("Years")
     plt.ylabel("Average Page Views")
-    plt.figure(figsize = (20,10))
-    sns.move_legend(k, 'upper left'), 
+    sns.move_legend(ax, 'upper left'), 
     fig.savefig('bar_plot.png')
     return fig
-draw_bar_plot()
+
 
 
 # In[6]:
 
 
-df['month'] = df["date"].dt.month.apply(lambda x: calendar.month_abbr[x])
+
 def draw_box_plot():
+    df['month'] = df["date"].dt.month.apply(lambda x: calendar.month_abbr[x])
     # Draw box plots (using Seaborn)
     fig, ax = plt.subplots(1,2,figsize=(13, 5))
     sns.boxplot(y = "value", x = "year", data = df, ax = ax[0] ) 
@@ -80,7 +81,7 @@ def draw_box_plot():
     # Save image and return fig (don't change this part)
     fig.savefig('box_plot.png')
     return fig
-draw_box_plot()
+
 
 
 # In[ ]:
